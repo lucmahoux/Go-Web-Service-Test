@@ -1,10 +1,11 @@
 package main
 
-import ( 
-    "net/http"
-    "github.com/lucmahoux/go_http_test/handlers"
-    "log"
-    "os"
+import (
+	"log"
+	"net/http"
+	"os"
+	"time"
+	"github.com/lucmahoux/go_http_test/handlers"
 )
 
 func main() {
@@ -16,5 +17,13 @@ func main() {
     serveMux.Handle("/", hello)
     serveMux.Handle("/goodbye", goodbye)
 
-    http.ListenAndServe(":9090", serveMux)
+    server := &http.Server{
+        Addr: ":9090",
+        Handler: serveMux,
+        IdleTimeout: 120*time.Second,
+        ReadTimeout: 1*time.Second,
+        WriteTimeout: 1*time.Second,
+    }
+
+    server.ListenAndServe()
 }
