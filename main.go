@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
 	"time"
+    "os/signal"
+
 	"github.com/lucmahoux/go_http_test/handlers"
 )
 
@@ -24,6 +27,21 @@ func main() {
         ReadTimeout: 1*time.Second,
         WriteTimeout: 1*time.Second,
     }
+    
+    go func () {
+        err := server.ListenAndServe()
+        if err != nil {
+            l.Fatal(err)
+        }
+    }()
 
-    server.ListenAndServe()
+    signalChannel := make(chan os.Signal)
+    signal.Notify(signalChannel, os.Interrupt)
+    signal.Notify(signalChannel, os.Kill)
+
+    sig := <-signalChannel
+    l.Println("Received terminate, graceful shutdown", sig)
+
+    tc, _ := context.WithTimeout(context.Background(), 30 * time.Second)
+    server.Shutdown(tc)
 }
