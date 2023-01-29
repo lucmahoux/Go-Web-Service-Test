@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"github.com/lucmahoux/go_http_test/data"
@@ -17,10 +16,8 @@ func NewProducts(l *log.Logger) *Products{
 
 func (p *Products) ServeHTTP(rw http.ResponseWriter, h *http.Request) {
     listProd := data.GetProducts()
-    d, err := json.Marshal(listProd)
+    err := listProd.ToJSON(rw)
     if err != nil {
         http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
     }
-
-    rw.Write(d)
 }
