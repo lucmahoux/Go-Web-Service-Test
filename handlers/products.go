@@ -11,7 +11,7 @@
 //
 // Produces:
 // - application/json
-// swagger:meta
+//swagger:meta
 
 package handlers
 
@@ -26,6 +26,14 @@ import (
 	"github.com/lucmahoux/go_http_test/data"
 )
 
+// A list of products returns in the response
+// swagger:response productsResponse
+type productsResponse struct {
+    // All products in the system
+    // in: body
+    Body []data.Product
+}
+
 type Products struct{
     l* log.Logger
 }
@@ -34,6 +42,11 @@ func NewProducts(l *log.Logger) *Products{
     return &Products{l}
 }
 
+
+// swagger:route GET /products products listProducts
+// Returns a list of products
+// responses:
+//   200: productsResponse
 
 func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request){
     listProd := data.GetProducts()

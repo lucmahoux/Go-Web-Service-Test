@@ -5,9 +5,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"time"
-    "os/signal"
-    "github.com/gorilla/mux"
+
+	"github.com/gorilla/mux"
+	"github.com/go-openapi/runtime/middleware"
 	"github.com/lucmahoux/go_http_test/handlers"
 )
 
@@ -30,6 +32,10 @@ func main() {
     postRouter := serveMux.Methods(http.MethodPost).Subrouter()
     postRouter.HandleFunc("/", productHandler.AddProduct)
     postRouter.Use(productHandler.MiddlewareProductValidation)
+
+    opts := middleware.RedocOpts{SpecURL: "/swagger.yaml"}
+    sh := middleware.Redoc(opts, nil)
+    getRouter.Handle("/docs", sh)
 
     // create a new server
     server := &http.Server{
