@@ -28,6 +28,9 @@ func main() {
     putRouter := serveMux.Methods(http.MethodPut).Subrouter()
     putRouter.HandleFunc("/{id:[0-9]+}", productHandler.UpdateProducts)
 
+    postRouter := serveMux.Methods(http.MethodPost).Subrouter()
+    postRouter.HandleFunc("/", productHandler.AddProduct)
+
     // create a new server
     server := &http.Server{
         Addr:               ":9090",            // configure the bind address
