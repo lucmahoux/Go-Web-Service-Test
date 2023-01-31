@@ -13,10 +13,8 @@ import (
 
 func main() {
     l := log.New(os.Stdout, "product-api", log.LstdFlags)
-    
+   
     // create the handlers
-    //hello := handlers.NewHello(l)
-    //goodbye := handlers.NewGoodbye(l)
     productHandler := handlers.NewProducts(l)
 
     // create a new serve mux and register the handlers
@@ -27,9 +25,11 @@ func main() {
 
     putRouter := serveMux.Methods(http.MethodPut).Subrouter()
     putRouter.HandleFunc("/{id:[0-9]+}", productHandler.UpdateProducts)
+    putRouter.Use(productHandler.MiddlewareProductValidation)
 
     postRouter := serveMux.Methods(http.MethodPost).Subrouter()
     postRouter.HandleFunc("/", productHandler.AddProduct)
+    postRouter.Use(productHandler.MiddlewareProductValidation)
 
     // create a new server
     server := &http.Server{
