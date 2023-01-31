@@ -1,4 +1,4 @@
-# Go HTTP Test
+# Go Web Service Test
 
 A Go tiny project to try the usage of HTTP methods in Go.
 
