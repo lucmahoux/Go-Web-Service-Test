@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
     "os/signal"
-
+    "github.com/gorilla/mux"
 	"github.com/lucmahoux/go_http_test/handlers"
 )
 
@@ -15,15 +15,18 @@ func main() {
     l := log.New(os.Stdout, "product-api", log.LstdFlags)
     
     // create the handlers
-    hello := handlers.NewHello(l)
-    goodbye := handlers.NewGoodbye(l)
+    //hello := handlers.NewHello(l)
+    //goodbye := handlers.NewGoodbye(l)
     productHandler := handlers.NewProducts(l)
 
     // create a new serve mux and register the handlers
-    serveMux := http.NewServeMux()
-    serveMux.Handle("/", productHandler)
-    serveMux.Handle("/hello", hello)
-    serveMux.Handle("/goodbye", goodbye)
+    serveMux := mux.NewRouter()
+
+    getRouter := serveMux.Methods(http.MethodGet).Subrouter()
+    getRouter.HandleFunc("/", productHandler.GetProducts)
+
+    putRouter := serveMux.Methods(http.MethodPut).Subrouter()
+    putRouter.HandleFunc("/{id:[0-9]+}", productHandler.UpdateProducts)
 
     // create a new server
     server := &http.Server{
