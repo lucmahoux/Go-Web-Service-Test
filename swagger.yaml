@@ -1,8 +1,14 @@
+basePath: /
+consumes:
+    - application/json
 definitions:
     Product:
         description: Product defines the structure for an API Product
         x-go-package: github.com/lucmahoux/go_http_test/data
-info: {}
+info:
+    description: Documentation for Product API
+    title: of Product API
+    version: 1.0.0
 paths:
     /products:
         get:
@@ -30,6 +36,8 @@ paths:
                     $ref: '#/responses/noContent'
             tags:
                 - products
+produces:
+    - application/json
 responses:
     noContent:
         description: ""
@@ -38,4 +46,6 @@ responses:
         schema:
             items: {}
             type: array
+schemes:
+    - http
 swagger: "2.0"

@@ -1,10 +1,9 @@
 // Package classification of Product API
-// swagger:meta
 //
 // Documentation for Product API
 //
 // Schemes: http
-// Basepath: /
+// BasePath: /
 // Version: 1.0.0
 //
 // Consumes:
@@ -12,7 +11,7 @@
 //
 // Produces:
 // - application/json
-
+// swagger:meta
 package handlers
 
 import (
