@@ -1,4 +1,5 @@
 // Package classification of Product API
+// swagger:meta
 //
 // Documentation for Product API
 //
@@ -11,7 +12,6 @@
 //
 // Produces:
 // - application/json
-//swagger:meta
 
 package handlers
 
@@ -28,10 +28,22 @@ import (
 
 // A list of products returns in the response
 // swagger:response productsResponse
-type productsResponse struct {
+type productsResponseWrapper struct {
     // All products in the system
     // in: body
     Body []data.Product
+}
+
+// swagger:response noContent
+type productsNoContent struct {
+}
+
+// swagger:parameters deleteProduct
+type productIDParameterWrapper struct {
+    // The id of the product to delete from the database
+    // in: path
+    // required: true
+    ID int `json:"id"`
 }
 
 type Products struct{
@@ -56,6 +68,7 @@ func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request){
     }
 }
 
+// AddProduct adds a product from the database
 func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
     p.l.Println("Handle POST Product")
 
@@ -63,6 +76,8 @@ func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
     data.AddProduct(&prod)
 }
 
+
+// UpdateProducts updates a product from the database
 func (p Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
     vars := mux.Vars(r)
 
@@ -85,6 +100,30 @@ func (p Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
         http.Error(rw, "Product not found", http.StatusInternalServerError)
         return
     }
+}
+
+// swagger:route DELETE /products/{id} products deleteProduct 
+// Deletes a product from database
+// responses:
+//   201: noContent 
+
+// DeleteProduct deletes a product from the database
+func (p * Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
+    vars := mux.Vars(r)
+    id, _ := strconv.Atoi(vars["id"])
+
+    p.l.Println("Handle DELETE Product", id)
+
+    //err := data.DeleteProduct(id)
+
+    /*if err == data.ErrProductNotFound {
+        http.Error(rw, "Product not found", http.StatusNotFound)
+        return
+    }
+
+    if err != nil {
+        http.Error(rw, "Product not found", http.StatusInternalServerError)
+    }*/
 }
 
 type KeyProduct struct{}
